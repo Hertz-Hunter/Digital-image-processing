@@ -1,0 +1,59 @@
+% Clear workspace and command window
+clc;
+clear;
+close all;
+
+% Read a built-in MATLAB RGB image to avoid "file not found" errors
+original_img = imread('peppers.png'); 
+
+% -------------------------------------------------------------------------
+% (a) Extract red, green, and blue components and combine them
+% -------------------------------------------------------------------------
+
+% Extract individual color channels
+R = original_img(:, :, 1); % Red component
+G = original_img(:, :, 2); % Green component
+B = original_img(:, :, 3); % Blue component
+
+% Combine the extracted components to get the original image back
+% Using the cat() function to concatenate arrays along the 3rd dimension
+recombined_img = cat(3, R, G, B);
+
+% -------------------------------------------------------------------------
+% (b) Convert the RGB image into grayscale using the standard equation
+% -------------------------------------------------------------------------
+
+% The standard NTSC equation for grayscale conversion is:
+% Grayscale = 0.2989 * R + 0.5870 * G + 0.1140 * B
+% We cast to double for accurate calculation, then back to uint8 for display
+gray_calc_img = 0.2989 * double(R) + 0.5870 * double(G) + 0.1140 * double(B);
+gray_calc_img = uint8(gray_calc_img);
+
+% Verify against MATLAB's inbuilt rgb2gray function 
+gray_inbuilt_img = rgb2gray(original_img); 
+
+% -------------------------------------------------------------------------
+% Display the Results using imshow 
+% -------------------------------------------------------------------------
+
+figure('Name', 'Image Processing: Experiment 1', 'NumberTitle', 'off');
+
+% Original Image
+subplot(2, 3, 1);
+imshow(original_img);
+title('Original RGB Image');
+
+% Extracted Channels (Displayed as grayscale intensity maps)
+subplot(2, 3, 2); imshow(R); title('Red Component');
+subplot(2, 3, 3); imshow(G); title('Green Component');
+subplot(2, 3, 4); imshow(B); title('Blue Component');
+
+% Recombined Image
+subplot(2, 3, 5);
+imshow(recombined_img);
+title('Recombined RGB Image');
+
+% Grayscale Image (Calculated)
+subplot(2, 3, 6);
+imshow(gray_calc_img);
+title('Calculated Grayscale Image');
