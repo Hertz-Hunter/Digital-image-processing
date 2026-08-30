@@ -1,0 +1,41 @@
+% Clear workspace and command window
+clc;
+clear;
+close all;
+
+% Read a built-in image and convert to grayscale for 2D spatial filtering
+original_img = rgb2gray(imread('peppers.png')); 
+
+% Corrupt the image with Salt and Pepper noise (5% density)
+noisy_img = imnoise(original_img, 'salt & pepper', 0.05);
+
+% -------------------------------------------------------------------------
+% (i) Construct and apply a 5x5 Gaussian Filter
+% -------------------------------------------------------------------------
+% Using imgaussfilt with a standard deviation of 1 and a 5x5 neighborhood
+gaussian_img = imgaussfilt(noisy_img, 1, 'FilterSize', 5);
+
+% -------------------------------------------------------------------------
+% (ii) Construct and apply a 5x5 Average Filter
+% -------------------------------------------------------------------------
+% Create a 5x5 averaging mask using fspecial, then apply it using imfilter
+avg_mask = fspecial('average', [5 5]);
+average_img = imfilter(noisy_img, avg_mask);
+
+% -------------------------------------------------------------------------
+% (iii) Apply a 5x5 Median Filter
+% -------------------------------------------------------------------------
+% Using medfilt2 for 2D median filtering across a 5x5 neighborhood
+median_img = medfilt2(noisy_img, [5 5]);
+
+% -------------------------------------------------------------------------
+% Display the Results
+% -------------------------------------------------------------------------
+figure('Name', 'Experiment 2: Noise Filtering', 'NumberTitle', 'off');
+
+subplot(2, 3, 1); imshow(original_img); title('Original Grayscale Image');
+subplot(2, 3, 2); imshow(noisy_img); title('Corrupted: Salt & Pepper Noise');
+
+subplot(2, 3, 4); imshow(gaussian_img); title('Restored: 5x5 Gaussian Filter');
+subplot(2, 3, 5); imshow(average_img); title('Restored: 5x5 Average Filter');
+subplot(2, 3, 6); imshow(median_img); title('Restored: 5x5 Median Filter');
