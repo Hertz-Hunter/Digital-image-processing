@@ -1,0 +1,84 @@
+% Edge Detection using Sobel and Prewitt Operators
+clc; clear; close all;
+
+% 1. Read the colored image (using a built-in MATLAB colored image)
+rgb_img = imread('pears.png'); 
+
+% Convert RGB to Grayscale for edge detection
+gray_img = rgb2gray(rgb_img);
+img_double = double(gray_img); % Convert to double for mathematical operations
+
+% =========================================================================
+% (A) MANUAL SOBEL OPERATION
+% =========================================================================
+% Define Sobel kernels for horizontal (X) and vertical (Y) derivatives
+sobel_x = [-1 0 1; -2 0 2; -1 0 1];
+sobel_y = [-1 -2 -1; 0 0 0; 1 2 1];
+
+% Apply convolution
+Gx_sobel = conv2(img_double, sobel_x, 'same');
+Gy_sobel = conv2(img_double, sobel_y, 'same');
+
+% Calculate gradient magnitude
+sobel_manual_mag = sqrt(Gx_sobel.^2 + Gy_sobel.^2);
+
+% Apply a simple threshold to convert to a binary image (like inbuilt functions do)
+threshold_s = 60; 
+sobel_manual_bin = sobel_manual_mag > threshold_s;
+
+% =========================================================================
+% (B) MANUAL PREWITT OPERATION
+% =========================================================================
+% Define Prewitt kernels for horizontal (X) and vertical (Y) derivatives
+prewitt_x = [-1 0 1; -1 0 1; -1 0 1];
+prewitt_y = [-1 -1 -1; 0 0 0; 1 1 1];
+
+% Apply convolution
+Gx_prewitt = conv2(img_double, prewitt_x, 'same');
+Gy_prewitt = conv2(img_double, prewitt_y, 'same');
+
+% Calculate gradient magnitude
+prewitt_manual_mag = sqrt(Gx_prewitt.^2 + Gy_prewitt.^2);
+
+% Apply threshold to convert to binary image
+threshold_p = 60; 
+prewitt_manual_bin = prewitt_manual_mag > threshold_p;
+
+% =========================================================================
+% (C) VERIFICATION USING INBUILT COMMANDS
+% =========================================================================
+% MATLAB's edge() function automatically calculates an optimal threshold
+sobel_inbuilt = edge(gray_img, 'sobel');
+prewitt_inbuilt = edge(gray_img, 'prewitt');
+
+% =========================================================================
+% DISPLAY RESULTS
+% =========================================================================
+figure('Name', 'Edge Detection Comparison', 'Position', [100, 100, 1200, 800]);
+
+% Original Images
+subplot(3, 2, 1);
+imshow(rgb_img);
+title('Original Colored Image');
+
+subplot(3, 2, 2);
+imshow(gray_img);
+title('Grayscale Image');
+
+% Sobel Comparison
+subplot(3, 2, 3);
+imshow(sobel_manual_bin);
+title('Manual Sobel Operation');
+
+subplot(3, 2, 4);
+imshow(sobel_inbuilt);
+title('Inbuilt Sobel (edge command)');
+
+% Prewitt Comparison
+subplot(3, 2, 5);
+imshow(prewitt_manual_bin);
+title('Manual Prewitt Operation');
+
+subplot(3, 2, 6);
+imshow(prewitt_inbuilt);
+title('Inbuilt Prewitt (edge command)');
